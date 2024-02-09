@@ -36,11 +36,12 @@ Install dependencies
   npm install
 ```
 
-Start the server
+Start the db
 
 ```bash
   npm run prisma 
 ```
+Start the server
 ```bash
   npm start
 ```
