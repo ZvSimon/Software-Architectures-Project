@@ -1,0 +1,73 @@
+datasource db {
+  provider = "mysql" // Utilisation de MySQL comme système de gestion de base de données
+  url      = env("DATABASE_URL") // L'URL de la base de données est stockée dans une variable d'environnement
+}
+
+generator client {
+  provider = "prisma-client-js" // Génère le client Prisma pour interagir avec la base de données en JavaScript
+}
+
+// Modèle pour les utilisateurs
+model User {
+  id        Int       @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String    @unique
+  password  String
+  admin     Admin? // Relation optionnelle, un utilisateur peut être un admin
+  customer  Customer? // Relation optionnelle, un utilisateur peut être un client
+
+  orders Order[] // Un utilisateur peut avoir plusieurs commandes
+}
+
+// Modèle pour les clients
+model Customer {
+  id              Int     @id @default(autoincrement())
+  userId          Int     @unique
+  user            User    @relation(fields: [userId], references: [id])
+  shippingAddress String // Adresse de livraison du client
+  orders          Order[] // Les commandes passées par le client
+}
+
+// Modèle pour les administrateurs
+model Admin {
+  id Int @id @default(autoincrement())
+
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id]) // Clé étrangère reliant Admin à User
+}
+
+// Modèle pour les commandes
+model Order {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) // Date de création de la commande
+  updatedAt DateTime @updatedAt // Date de mise à jour de la commande
+  total     Float // Total de la commande
+  status    String // Statut de la commande (ex : "pending", "completed", "cancelled")
+  userId    Int // Clé étrangère pour l'utilisateur qui a passé la commande
+  user      User     @relation(fields: [userId], references: [id]) // Relation avec User
+
+  orderItems OrderItem[] // Les éléments inclus dans la commande
+  Customer   Customer?   @relation(fields: [customerId], references: [id])
+  customerId Int?
+}
+
+// Modèle pour les éléments de commande
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int // Quantité commandée de ce produit
+  price     Float // Prix par unité au moment de la commande
+  orderId   Int // Clé étrangère pour la commande
+  order     Order   @relation(fields: [orderId], references: [id]) // Relation avec Order
+  productId Int // Clé étrangère pour le produit
+  product   Product @relation(fields: [productId], references: [id]) // Relation avec Product
+}
+
+// Modèle pour les produits
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String // Nom du produit
+  description String? // Description du produit, optionnelle
+  price       Float // Prix du produit
+  orderItems  OrderItem[] // Les éléments de commande associés à ce produit
+}
