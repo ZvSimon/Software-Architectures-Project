@@ -33,7 +33,8 @@ const authenticateJWT = (req: any, res: any, next: any): void => {
   } else {
       console.error('jwtConfig.secret est undefined');
       return res.status(500).json({ error: 'Internal server error.' });
-  }}
+  }
+}
 };
 
 export default authenticateJWT;

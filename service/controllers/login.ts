@@ -21,8 +21,9 @@ const generateToken = (user: any): string => {
     lastName: user.lastName,
     shippingAddress: user.customer.shippingAddress || '',
   };
-
-  return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '24h' });
+  console.log(process.env.JWT_SECRET)
+  return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '100h' });
+  
 };
 
 const loginUser = async (req: Request, res: Response): Promise<void> => {

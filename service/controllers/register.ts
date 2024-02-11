@@ -6,7 +6,7 @@ import { generateToken } from './login';
 const prisma = new PrismaClient();
 
 const registerUser = async (req: Request, res: Response): Promise<void> => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password,shippingAddress} = req.body;
 
   try {
     const alreadyExistsUser: User | null = await prisma.user.findUnique({
@@ -29,7 +29,15 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
         lastName,
         email,
         password: hashedPassword,
+        customer: { 
+          create: {
+            shippingAddress:shippingAddress
+          }
+        }
       },
+      include: {
+        customer: true // Inclure les détails du client dans la réponse
+      }
     });
 
     const token: string = generateToken(newUser);

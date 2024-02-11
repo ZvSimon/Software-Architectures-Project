@@ -1,14 +1,15 @@
 import express, { Application, Request, Response } from 'express';
 import morgan from 'morgan';
+require('dotenv').config();
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
 import LoginRouter from './routes/login';
 import RegisterRouter from './routes/register';
-
+import OrderRouter from './routes/order';
 const prisma = new PrismaClient();
-
+import ProductRouter from './routes/product';
 const app: Application = express();
 app.get('/', (req: Request, res: Response) => {
   res.json({
@@ -22,6 +23,8 @@ app.use(cors());
 app.use(cookieParser());
 app.use('/api/login', LoginRouter);
 app.use('/api/register', RegisterRouter);
+app.use('/api/orders', OrderRouter);
+app.use('/api/products', ProductRouter);
 const port: string | number = process.env.PORT || 8080;
 
 // Connect to the database via Prisma Client
