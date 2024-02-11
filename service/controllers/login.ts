@@ -19,8 +19,9 @@ const generateToken = (user: User): string => {
     firstName: user.firstName,
     lastName: user.lastName,
   };
-
-  return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '24h' });
+  console.log(process.env.JWT_SECRET)
+  return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '100h' });
+  
 };
 
 const loginUser = async (req: Request, res: Response): Promise<void> => {

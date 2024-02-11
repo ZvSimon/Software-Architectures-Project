@@ -1,5 +1,5 @@
 import express from 'express';
-import { createOrder } from '../controllers/order'; // Fix import path
+import { createOrder } from '../controllers/order';
 import authenticateJWT from '../middlewares/authenticateJWT';
 
 const router = express.Router();

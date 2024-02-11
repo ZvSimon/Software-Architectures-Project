@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import morgan from 'morgan';
+require('dotenv').config();
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';

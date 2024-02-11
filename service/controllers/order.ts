@@ -17,7 +17,11 @@ export const createOrder = async (req: Request, res: Response) => {
             create: orderItems.map((item: { quantity: number; price: number; productId: number }) => ({
               quantity: item.quantity,
               price: item.price,
-              productId: item.productId,
+              product: {
+                connect: {
+                  id: item.productId,
+                },
+              },
             })),
           },
         },
