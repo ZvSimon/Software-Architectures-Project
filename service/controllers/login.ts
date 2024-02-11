@@ -10,14 +10,16 @@ interface UserPayload {
   email: string;
   firstName: string;
   lastName: string;
+  shippingAddress: string;
 }
 
-const generateToken = (user: User): string => {
+const generateToken = (user: any): string => {
   const payload: UserPayload = {
     id: user.id,
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
+    shippingAddress: user.customer.shippingAddress || '',
   };
 
   return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '24h' });

@@ -8,5 +8,4 @@ const config: Config = {
   secret: process.env.JWT_SECRET,
   expiresIn: '3h', 
 };
-
 export default config;
