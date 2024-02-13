@@ -10,6 +10,7 @@ import RegisterRouter from './routes/register';
 import OrderRouter from './routes/order';
 const prisma = new PrismaClient();
 import ProductRouter from './routes/product';
+import PaymentRouter from './routes/payment';
 const app: Application = express();
 app.get('/', (req: Request, res: Response) => {
   res.json({
@@ -25,6 +26,7 @@ app.use('/api/login', LoginRouter);
 app.use('/api/register', RegisterRouter);
 app.use('/api/orders', OrderRouter);
 app.use('/api/products', ProductRouter);
+app.use('/api/payments', PaymentRouter);
 const port: string | number = process.env.PORT || 8080;
 
 // Connect to the database via Prisma Client

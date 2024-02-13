@@ -22,11 +22,12 @@ model User {
 
 // Modèle pour les clients
 model Customer {
-  id              Int     @id @default(autoincrement())
-  userId          Int     @unique
-  user            User    @relation(fields: [userId], references: [id])
+  id              Int       @id @default(autoincrement())
+  userId          Int       @unique
+  user            User      @relation(fields: [userId], references: [id])
   shippingAddress String // Adresse de livraison du client
   orders          Order[] // Les commandes passées par le client
+  Payment         Payment[]
 }
 
 // Modèle pour les administrateurs
@@ -49,7 +50,8 @@ model Order {
 
   orderItems OrderItem[] // Les éléments inclus dans la commande
   Customer   Customer?   @relation(fields: [customerId], references: [id])
-  customerId Int?
+  customerId Int
+  Payment    Payment[]
 }
 
 // Modèle pour les éléments de commande
@@ -71,3 +73,40 @@ model Product {
   price       Float // Prix du produit
   orderItems  OrderItem[] // Les éléments de commande associés à ce produit
 }
+
+// Modèle pour les paiements
+// Modèle pour les paiements
+model Payment {
+  id         Int      @id @default(autoincrement())
+  amount     Float
+  status     String // Par exemple : "pending", "completed", "failed"
+  method     String // Par exemple : "credit_card", "paypal", "stripe"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+  Order      Order?   @relation(fields: [orderId], references: [id])
+  orderId    Int?
+}
+
+// model Notification {
+//   id         Int      @id @default(autoincrement())
+//   userId     Int
+//   user       User     @relation(fields: [userId], references: [id])
+//   customerId Int
+//   customer   Customer @relation(fields: [customerId], references: [id])
+//   title      String
+//   message    String
+//   read       Boolean  @default(false)
+//   createdAt  DateTime @default(now())
+// }
+
+// model EmailLog {
+//   id           Int      @id @default(autoincrement())
+//   to           String // Destinataire de l'email
+//   subject      String // Sujet de l'email
+//   body         String // Corps de l'email
+//   sentAt       DateTime @default(now()) // Date et heure de l'envoi
+//   status       String // Statut de l'envoi, par exemple, "sent", "failed"
+//   errorMessage String? // Message d'erreur en cas d'échec de l'envoi
+// }

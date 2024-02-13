@@ -71,3 +71,21 @@ export const getOrderById = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+export const getTotalByUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const orders = await prisma.order.findMany({
+      where: {
+        userId: Number(userId),
+      },
+    });
+
+    const total = orders.reduce((sum, order) => sum + order.total, 0);
+
+    res.status(200).json({ userId, total });
+  } catch (error) {
+    console.error("Failed to get total: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
