@@ -39,7 +39,17 @@ export const processPayment = async (req: Request, res: Response): Promise<void>
                 method: 'carte',
             },
         });
-
+        console.log('Paiement effectué avec succès', payment);
+        try {
+            const updatedPayment = await prisma.payment.update({
+                where: { id: payment.id },
+                data: { orderId: Number(orderId) },
+            });
+        
+            console.log('Payment updated:', updatedPayment);
+        } catch (error) {
+            console.error('Failed to update payment:', error);
+        }
         res.status(200).json({ message: 'Paiement effectué avec succès', payment });
     } catch (error: unknown) {
         if (error instanceof Error) {
