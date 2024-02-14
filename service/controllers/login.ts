@@ -14,6 +14,10 @@ interface UserPayload {
 }
 
 const generateToken = (user: any): string => {
+  if (!user || !user.customer) {
+    throw new Error('User or user.customer is undefined');
+  }
+
   const payload: UserPayload = {
     id: user.id,
     email: user.email,
@@ -21,9 +25,9 @@ const generateToken = (user: any): string => {
     lastName: user.lastName,
     shippingAddress: user.customer.shippingAddress || '',
   };
-  console.log(process.env.JWT_SECRET)
-  return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '100h' });
+
   
+  return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '100h' });
 };
 
 const loginUser = async (req: Request, res: Response): Promise<void> => {
@@ -32,6 +36,7 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const userWithEmail: User | null = await prisma.user.findUnique({
       where: { email },
+      include: { customer: true }, // Assurez-vous d'inclure le client lors de la récupération de l'utilisateur
     });
 
     if (userWithEmail === null) {

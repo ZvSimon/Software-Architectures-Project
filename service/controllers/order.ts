@@ -89,3 +89,23 @@ export const getTotalByUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+export const getOrdersByCustomer = async (req: Request, res: Response) => {
+  const { customerId } = req.params;
+  if (isNaN(Number(customerId))) {
+    res.status(400).json({ error: "customerId must be a number" });
+    return;
+  }
+
+  try {
+    const orders = await prisma.order.findMany({
+      where: {
+        customerId: Number(customerId),
+      },
+    });
+
+    res.status(200).json({ customerId, orders });
+  } catch (error) {
+    console.error("Failed to get orders: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
