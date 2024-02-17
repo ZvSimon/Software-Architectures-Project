@@ -1,0 +1,19 @@
+datasource db {
+  provider = "mysql" // Utilisation de MySQL comme système de gestion de base de données
+  url      = env("DATABASE_URL") // L'URL de la base de données est stockée dans une variable d'environnement
+}
+
+generator client {
+  provider = "prisma-client-js" // Génère le client Prisma pour interagir avec la base de données en JavaScript
+}
+
+model Payment {
+  id         Int      @id @default(autoincrement())
+  amount     Float
+  status     String // Par exemple : "pending", "completed", "failed"
+  method     String // Par exemple : "credit_card", "paypal", "stripe"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  customerId Int
+  orderId    Int
+}

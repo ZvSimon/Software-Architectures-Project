@@ -1,0 +1,27 @@
+# Use the official Node.js 16 image from Docker Hub
+FROM node:18
+
+# Set the working directory
+WORKDIR /app
+
+COPY package.json ./
+RUN npm install
+
+# Run the app
+CMD npm run prisma
+
+FROM node:14 AS run
+WORKDIR /app
+
+# Copier les dépendances
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package*.json ./
+
+# Copier les fichiers compilés
+COPY --from=build /app/service ./service
+
+# Exposer le port sur lequel l'application s'exécute
+EXPOSE 8080
+
+# Exécuter l'application
+CMD ["npm", "start"]
