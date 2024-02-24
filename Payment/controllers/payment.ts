@@ -1,6 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import { Request, Response } from 'express';
+import { Request as ExpressRequest , Response } from 'express';
 import axios from 'axios';
+interface Request extends ExpressRequest {
+  token?: string;
+}
 const prisma = new PrismaClient();
 
 export const processPayment = async (
@@ -8,10 +11,25 @@ export const processPayment = async (
   res: Response
 ): Promise<void> => {
   const { customerId, amount, orderId } = req.body;
+  if (!req.token) {
+    res.status(401).send('Token non fourni');
+    return;
+  }
 
+  // Vérifiez que req.token ne contient pas de caractères non valides
+  if (!/^[\w-]*$/.test(req.token)) {
+    res.status(400).send('Token contient des caractères non valides');
+    return;
+  }
+  const token = req.token.replace(/\n/g, '');
   try {
     const { data: order } = await axios.get(
-      `http://localhost:8083/api/orders/${orderId}`
+      `http://localhost:8082/api/orders/${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${req.token}`, // Assurez-vous que req.token contient un token d'authentification valide
+        },
+      }
     );
 
     if (!order) {

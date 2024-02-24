@@ -16,7 +16,7 @@ const authenticateJWT = (req: any, res: any, next: any): void => {
   const parts: string[] = authHeader.split(' ');
   if (parts.length === 2 && parts[0] === 'Bearer') {
     const token: string = parts[1];
-
+    req.token = token;
     // Log the extracted token for debugging purposes
     console.log('Extracted JWT token:', token);
 
