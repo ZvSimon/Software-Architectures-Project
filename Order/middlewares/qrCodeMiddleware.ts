@@ -1,7 +1,6 @@
 import qr from 'qrcode';
 import { Request, Response, NextFunction } from 'express';
 
-// Étendez l'interface Request pour ajouter les propriétés qrCodeURL et qrCodeData
 interface RequestWithQRCode extends Request {
   qrCodeURL?: string;
   qrCodeData?: string;

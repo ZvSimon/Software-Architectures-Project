@@ -1,10 +1,11 @@
 import express from 'express';
 import { createOrder,getOrderById,getOrders, getTotalByUser,getOrdersByCustomer } from '../controllers/order';
 import authenticateJWT from '../middlewares/authenticateJWT';
+import { generateQRCodeMiddleware } from '../middlewares/qrCodeMiddleware';
 
 const router = express.Router();
 // Utilisez `authenticateJWT` comme middleware avant `createOrder`
-router.post('/',  authenticateJWT, createOrder);
+router.post('/',  authenticateJWT,generateQRCodeMiddleware, createOrder);
 router.get('/', authenticateJWT,getOrders);
 router.get('/:id', authenticateJWT,getOrderById);
 router.get('/total/:userId', authenticateJWT,getTotalByUser);
