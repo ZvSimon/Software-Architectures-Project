@@ -8,5 +8,5 @@ router.post('/',  authenticateJWT, createOrder);
 router.get('/', authenticateJWT,getOrders);
 router.get('/:id', authenticateJWT,getOrderById);
 router.get('/total/:userId', authenticateJWT,getTotalByUser);
-router.get('/:customerId', authenticateJWT,getOrdersByCustomer);
+router.get('/customer/:customerId', authenticateJWT,getOrdersByCustomer);
 export default router;

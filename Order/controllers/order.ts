@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import axios from 'axios';
+import { generateQRCodeMiddleware } from '../middlewares/qrCodeMiddleware';
 const prisma = new PrismaClient();
 
-export const createOrder = async (req: Request, res: Response) => {
+export const createOrder = async (req: Request, res: Response,next:NextFunction) => {
   const { userId, orderItems, total, status, customerId } = req.body;
 
   try {
@@ -22,6 +23,8 @@ export const createOrder = async (req: Request, res: Response) => {
       res.status(400).json({ error: "User and customer are not linked" });
       return;
     }
+    // fonction conditionnelle qui me permet de dire si le userId ou CustomerId existe pas
+    // if (Number(user.data.id))>
     const order = await prisma.order.create({
       data: {
         total: total,
@@ -37,8 +40,9 @@ export const createOrder = async (req: Request, res: Response) => {
         },
       },
     });
-
-    res.status(201).json(order);
+    const orderURL= `http://localhost:8082/api/order/${order.id}`;
+    (req as any).qrCodeURL = orderURL;
+    next();
   } catch (error) {
     console.error("Failed to create order: ", error);
     res.status(500).json({ error: "Internal server error" });
