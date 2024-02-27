@@ -124,3 +124,29 @@ export const getOrdersByCustomer = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+export const getOrderDetailsFromQR = async (req: Request, res: Response) => {
+  try {
+    // Récupérez l'ID de la commande à partir de la requête ou des paramètres de l'URL
+    const orderId = req.params.orderId;
+
+    // Recherchez la commande dans la base de données
+    const order = await prisma.order.findUnique({
+      where: {
+        id: Number(orderId),
+      },
+      // Vous pouvez également inclure les détails des articles de commande si nécessaire
+    });
+
+    if (!order) {
+      // Si la commande n'existe pas, renvoyez une erreur 404
+      res.status(404).json({ error: "Order not found" });
+      return;
+    }
+
+    // Renvoyer les détails de la commande à l'utilisateur
+    res.status(200).json(order);
+  } catch (error) {
+    console.error("Failed to get order details from QR: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
