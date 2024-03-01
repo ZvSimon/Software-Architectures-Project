@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2019",
-    "module": "commonjs",
+    "target": "ES6",
+    "module": "CommonJS",
     "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
@@ -13,6 +13,7 @@
     "types": ["node", "jest"],
     "sourceMap": true
   },
-  "include": ["**/*.ts"],
+  "type": "module",
+  "include": ["**/*.ts", "prisma/seed.mjs"],
   "exclude": ["node_modules", "**/*.spec.ts", "dist"]
 }

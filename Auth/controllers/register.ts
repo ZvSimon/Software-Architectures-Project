@@ -29,6 +29,7 @@ const registerUser = async (req: Request, res: Response): Promise<void> => {
         lastName,
         email,
         password: hashedPassword,
+        role:'Customer',
         customer: { 
           create: {
             shippingAddress:shippingAddress

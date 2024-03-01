@@ -1,5 +1,5 @@
 {
-  "name": "internshipsmanagement",
+  "name": "ordersharingsystem",
   "version": "1.0.0",
   "description": "",
   "type": "commonjs",
@@ -10,7 +10,7 @@
   "scripts": {
     "start": "nodemon -x ts-node ./server.ts",
     "prisma:watch": "nodemon --watch prisma/schema.prisma --exec 'npm run prisma'",
-    "prisma": "npx prisma generate  && npx prisma db push && ts-node prisma/seed.ts",
+    "prisma": "npx prisma generate  && npx prisma db push && npx ts-node prisma/seed.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

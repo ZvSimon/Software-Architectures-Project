@@ -9,14 +9,21 @@ generator client {
 
 // Modèle pour les utilisateurs
 model User {
-  id        Int    @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   firstName String
   lastName  String
-  email     String @unique
+  email     String   @unique
   password  String
+  role      UserRole // Champ pour définir le rôle de l'utilisateur
 
-  customer Customer? // Relation optionnelle, un utilisateur peut être un client
-  Admin    Admin?
+  customer Customer?
+  admin    Admin?
+}
+
+// Enumération pour définir les rôles d'utilisateur possibles
+enum UserRole {
+  Customer
+  Admin
 }
 
 // Modèle pour les clients
