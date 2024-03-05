@@ -8,15 +8,22 @@ generator client {
 }
 
 model Order {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) // Date de création de la commande
-  updatedAt DateTime @updatedAt // Date de mise à jour de la commande
-  total     Float // Total de la commande
-  status    String // Statut de la commande (ex : "pending", "completed", "cancelled")
-  userId    Int // Clé étrangère pour l'utilisateur qui a passé la commande
-
+  id         Int             @id @default(autoincrement())
+  createdAt  DateTime        @default(now()) // Date de création de la commande
+  updatedAt  DateTime        @updatedAt // Date de mise à jour de la commande
+  total      Float // Total de la commande
+  status     String // Statut de la commande (ex : "pending", "completed", "cancelled")
+  userId     Int // Clé étrangère pour l'utilisateur qui a passé la commande
+  qrCodeData String          @db.VarChar(2048)
   orderItems OrderItem[] // Les éléments inclus dans la commande
+  customers  OrderCustomer[]
+}
+
+model OrderCustomer {
+  id         Int   @id @default(autoincrement())
   customerId Int
+  orderId    Int
+  Order      Order @relation(fields: [orderId], references: [id])
 }
 
 // Modèle pour les éléments de commande

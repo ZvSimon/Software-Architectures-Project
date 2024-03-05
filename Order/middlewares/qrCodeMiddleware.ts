@@ -12,6 +12,7 @@ export async function generateQRCodeMiddleware(req: RequestWithQRCode, res: Resp
         if (!url) {
             throw new Error('URL du QR code non fournie');
         }
+        console.log(`Génération du QR code pour l'URL : ${url}`);
         const qrCodeData = await qr.toDataURL(url);
         req.qrCodeData = qrCodeData; // Stockez les données du QR code dans la requête pour un accès ultérieur
         next();

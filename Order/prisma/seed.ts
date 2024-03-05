@@ -7,9 +7,10 @@ async function main() {
   const newOrder = await prisma.order.create({
     data: {
       total: 20.99,
+      qrCodeData: "",
       status: "pending",
       userId: 2,
-      customerId: 1,
+      
       orderItems: {
         create: [
           {
