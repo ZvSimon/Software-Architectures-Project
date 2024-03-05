@@ -38,7 +38,7 @@ export const createOrder = async (req: Request, res: Response,next:NextFunction)
         await prisma.orderCustomer.create({
           data: {
             orderId: order.id,
-            customerId: customerId,
+            customerId:Number (customerId),
           },
         });
       }
@@ -191,6 +191,36 @@ export const getOrdersByCustomer = async (req: Request, res: Response) => {
     res.status(200).json({ customerId, orders });
   } catch (error) {
     console.error("Failed to get orders: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+export const addCustomerToOrder = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { customerId, qrcode } = req.body;
+
+  try {
+    const order = await prisma.order.findUnique({ where: { id: Number(id) } });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    if (order.qrCodeData !== qrcode) {
+      return res.status(400).json({ error: `The provided qrcode does not match the order's qrcode` });
+    }
+
+    const customer = await axios.get(`http://localhost:8080/api/customer/${customerId}`);
+
+    await prisma.orderCustomer.create({
+      data: {
+        orderId: order.id,
+        customerId: customerId,
+      },
+    });
+
+    res.status(200).json({ message: "Customer added to order" });
+  } catch (error) {
+    console.error("Failed to add customer to order: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
