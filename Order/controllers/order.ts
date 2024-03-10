@@ -224,3 +224,25 @@ export const addCustomerToOrder = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+export const updateOrder = async (req: Request, res: Response): Promise<Response> => {
+  const { orderId } = req.params;
+  const { status, total } = req.body;
+  if (total === null || total === undefined) {
+    return res.status(400).send('Total cannot be null or undefined');
+  }
+  try {
+    // Mettre à jour la commande
+    const order = await prisma.order.update({
+      where: { id: Number(orderId) },
+      data: {
+        status: status,
+        total: total,
+      },
+    })
+
+    return res.status(200).json(order);
+  } catch (error) {
+    console.error('Error updating order:', error);
+    return res.status(500).send('Error updating order');
+  }
+};

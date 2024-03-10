@@ -20,7 +20,7 @@ app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
 app.use(cookieParser());
-app.use('/api/payments', PaymentRouter);
+app.use('/api/payment', PaymentRouter);
 const port: string | number = process.env.PORT || 8083;
 
 // Connect to the database via Prisma Client

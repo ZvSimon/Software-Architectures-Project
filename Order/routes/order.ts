@@ -1,5 +1,5 @@
 import express from 'express';
-import { createOrder,getOrderById,getOrders, getTotalByUser,getOrdersByCustomer,addCustomerToOrder } from '../controllers/order';
+import { createOrder,getOrderById,getOrders, getTotalByUser,getOrdersByCustomer,addCustomerToOrder,updateOrder } from '../controllers/order';
 import authenticateJWT from '../middlewares/authenticateJWT';
 
 const router = express.Router();
@@ -9,7 +9,7 @@ router.post('/',  authenticateJWT, createOrder);
 router.get('/', authenticateJWT,getOrders);
 router.get('/total/:userId', authenticateJWT,getTotalByUser);
 router.get('/customer/:customerId', authenticateJWT,getOrdersByCustomer);
+router.put('/:orderId',authenticateJWT, updateOrder);
 router.get('/:id', authenticateJWT,getOrderById);
-
 
 export default router;
