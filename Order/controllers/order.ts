@@ -246,3 +246,44 @@ export const updateOrder = async (req: Request, res: Response): Promise<Response
     return res.status(500).send('Error updating order');
   }
 };
+export const deleteOrder = async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params;
+  const orderId = Number(id);
+
+  if (isNaN(orderId)) {
+    return res.status(400).json({ error: 'Invalid order ID' });
+  }
+
+  try {
+    // Vérifiez si la commande existe
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    // Supprimez d'abord les entrées OrderItem liées à la commande pour éviter les erreurs de contrainte de clé étrangère
+    await prisma.orderItem.deleteMany({
+      where: { orderId: orderId },
+    });
+
+    // Ensuite, supprimez les entrées OrderCustomer liées
+    await prisma.orderCustomer.deleteMany({
+      where: { orderId: orderId },
+    });
+
+    // Finalement, supprimez la commande
+    await prisma.order.delete({
+      where: { id: orderId },
+    });
+
+    return res.status(200).json({ message: 'Order deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    // Gérez les erreurs spécifiques liées aux contraintes de clé étrangère si nécessaire
+    
+    return res.status(500).json({ error: 'Error deleting order' });
+  }
+};

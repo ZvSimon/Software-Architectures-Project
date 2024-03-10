@@ -29,6 +29,31 @@ const { data: order } = await axios.get(`http://localhost:8082/api/orders/${paym
         res.status(400).send(`Order with id ${payment.orderId} does not exist`);
         return;
       }
+      const orders = await axios.get(`http://localhost:8082/api/orders`, {
+  headers: {
+    Authorization: `Bearer ${authHeader.split(' ')[1]}`
+  },
+  maxRedirects: 0
+});
+
+// Loop through all orders
+for (let order of orders.data) {
+  // If the order status is 'Paid', delete the order
+  if (order.status === 'Paid') {
+    try {
+      await axios.delete(`http://localhost:8082/api/orders/${order.id}`, { // Use order.id instead of payment.orderId
+        headers: {
+          Authorization: `Bearer ${authHeader.split(' ')[1]}`
+        },
+        maxRedirects: 0
+      });
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      res.status(500).send('Error deleting order');
+      return; // Exit the function if an error occurs
+    }
+  }
+}
 
       // Check if the customer is the owner of the order
       const isCustomerAssociatedWithOrder = order.customers.some((customer: { id: any; }) => customer.id === payment.customerId);
