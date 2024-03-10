@@ -287,3 +287,4 @@ export const deleteOrder = async (req: Request, res: Response): Promise<Response
     return res.status(500).json({ error: 'Error deleting order' });
   }
 };
+

@@ -54,3 +54,37 @@ export const getProductById = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+export const updateProduct = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, description, price } = req.body;
+
+  try {
+    const product = await prisma.product.update({
+      where: { id: Number(id) },
+      data: {
+        name: name,
+        description: description,
+        price: price,
+      },
+    });
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error("Failed to update product: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+export const deleteProduct = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const product = await prisma.product.delete({
+      where: { id: Number(id) },
+    });
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error("Failed to delete product: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
