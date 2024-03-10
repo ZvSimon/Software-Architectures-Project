@@ -1,7 +1,19 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+require('dotenv').config();
 import axios from 'axios';
+const nodemailer = require('nodemailer');
 const prisma = new PrismaClient();
+let transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  }
+});
+
 export const processPayment = async (req: Request, res: Response): Promise<void> => {
   const { payments } = req.body; // payments is an array of objects { orderId, amount, customerId }
   console.log('Processing payments:', payments);
@@ -96,6 +108,32 @@ const paymentData = {
 try {
   await prisma.payment.create({
     data: paymentData,
+  });
+
+  // Récupérez l'adresse e-mail du client à partir de la base de données
+  const response = await axios.get(`http://localhost:3000/api/customer/${payment.customerId}`);
+
+  const customer = response.data;
+  if (!customer) {
+    console.log(`Customer with id ${payment.customerId} does not exist`);
+    return;
+  }
+
+  // Définissez les options de l'e-mail
+  const mailOptions = {
+    from: '"Votre Nom ou Société" <votre.email@exemple.com>', // adresse de l'expéditeur
+    to: customer.email, // adresse e-mail du client
+    subject: "Confirmation de paiement", // Sujet
+    text: "Votre paiement a été traité avec succès.", // corps de l'email en texte brut
+    html: "<b>Votre paiement a été traité avec succès.</b>" // corps de l'email en HTML
+  };
+  
+  // Envoyez l'email
+  transporter.sendMail(mailOptions, (error: Error | null, info: { messageId: string }) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message envoyé: %s', info.messageId);
   });
 } catch (error) {
   console.error('Error inserting payment:', error);
