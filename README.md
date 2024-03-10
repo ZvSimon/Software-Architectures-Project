@@ -24,10 +24,12 @@ Clone the project
   git clone https://github.com/ZvSimon/Software-Architectures-Project.git
 ```
 
-Go to the project directory
+Go to the project directory 
+
+Then, go on eache folder :
 
 ```bash
-  cd service
+  cd folder
 ```
 
 Install dependencies
@@ -36,13 +38,22 @@ Install dependencies
   npm install
 ```
 
-Start the db
+Start the server
 
 ```bash
   npm run prisma 
 ```
-Start the server
 ```bash
   npm start
 ```
+
+
+
+
+## Features
+
+- Login/Register with Token generation
+- Product Service : You can post,delete,put and get products.
+- Order Service : You can create an order, after a QrCode is generate. If the Qrcode is the same, then you can join the order.
+- Payment Service : You can as people want. When the command is completed, we erase the order & we send a email to confirm that evrything has been paid & how much they paid. 
 
